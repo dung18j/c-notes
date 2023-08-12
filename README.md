@@ -12,7 +12,7 @@
 SS1:
 SS2:
 ¬¬¬ c
-
+doi tien mien : thanh dev => tu chuyen sang dang visual studio
 ¬¬¬
 
 ## Macro
