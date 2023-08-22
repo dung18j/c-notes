@@ -292,6 +292,10 @@ int main() {
     return 0;
 }
 ```
+### Khi nào nên sử dụng mảng
+1. Lưu trữ tập hợp các phần tử có cùng kiểu dữ liệu
+2. Xử lý dữ liệu đơn giản
+
 ## Decision
 
 ## Looping
