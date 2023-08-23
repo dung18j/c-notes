@@ -4,6 +4,298 @@
 
 ## Array
 
+Mảng là một tập hợp tuần tự các phần tử có cùng kiểu dữ liệu và các phần tử được lưu trữ trong một dãy các ô nhớ liên tục trên bộ nhớ. Các phần tử của mảng được truy cập bằng cách sử dụng “chỉ số”.
+
+### Mảng 1 chiều 
+
+Mảng 1 chiều là một cấu trúc dữ liệu trong lập trình được sử dụng để lưu trữ một tập hợp các phần tử có cùng kiểu dữ liệu và được xếp theo thứ tự trong một dòng duy nhất. Các phần tử 
+
+Ví dụ về khai báo mảng 1 chiều:
+```c
+int myArray[5]; 
+```
+Sau khi khai báo, chúng ta có thể gán giá trị cho từng phần tử của mảng thông qua chỉ số của nó:
+```c
+myArray[0] = 10; 
+myArray[1] = 20;
+// ...
+```
+Chúng ta cũng có thể truy xuất giá trị của các phần tử trong mảng bằng cách sử dụng chỉ số:
+```c
+int value = myArray[2];
+```
+Mảng được lưu trữ trong bộ nhớ máy tính theo cách liên tiếp và tuần tự. Khi một mảng được khai báo, hệ điều hành (hoặc trình biên dịch) sẽ cấp phát một phần của bộ nhớ liên tiếp để lưu trữ các phần tử của mảng. Mỗi phần tử trong mảng được lưu trữ tại một vị trí ô nhớ duy nhất.
+
+Để truy cập một phần tử trong mảng, hệ thống sử dụng công thức tính địa chỉ ô nhớ của phần tử đó. Công thức này thường dựa trên kích thước của kiểu dữ liệu của mảng và chỉ số của phần tử. Ví dụ, để truy cập phần tử thứ i trong mảng, hệ thống có thể tính địa chỉ bằng công thức: địa chỉ_đầu_mảng + (kích_thước_phần_tử * i).
+
+Ví dụ, giả sử chúng ta có một mảng kiểu số nguyên 4-byte (int) gồm 5 phần tử. Khi mảng này được khai báo, hệ điều hành sẽ cấp phát một vùng nhớ 20 byte (4 byte * 5 phần tử) liên tiếp cho mảng. Các phần tử sẽ được lưu trữ theo thứ tự từ địa chỉ đầu mảng.
+```c
+int myArray[5]; // Khai báo mảng gồm 5 phần tử kiểu int
+
+&myArray[0] // địa chỉ đầu mảng 
+&myArray[1] // địa chỉ đầu mảng + 4 byte (kích thước của kiểu int)
+&myArray[2] // địa chỉ đầu mảng + 8 byte (kích thước của kiểu int * 2)
+// ...
+```
+Các thao tác với mảng 1 chiều
+- Nhập xuất phần tử trong mảng
+- Tìm kiếm phần tử trong mảng
+- Sắp xếp phần tử trong mảng
+- Xóa phần tử trong mảng
+```c
+#include <stdio.h>
+
+#define MAX_SIZE 100
+
+void nhapMang(int arr[], int size) {
+    int i;
+    
+    printf("Nhap cac phan tu trong mang:\n");
+    for (i = 0; i < size; i++) {
+        printf("arr[%d] = ", i);
+        scanf("%d", &arr[i]);
+    }
+}
+
+void xuatMang(int arr[], int size) {
+    int i;
+    
+    printf("Cac phan tu trong mang:\n");
+    for (i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int timKiem(int arr[], int size, int key) {
+    int i;
+    
+    for (i = 0; i < size; i++) {
+        if (arr[i] == key) {
+            return i; // Trả về chỉ số của phần tử nếu tìm thấy
+        }
+    }
+    
+    return -1; // Trả về -1 nếu không tìm thấy
+}
+
+void sapXep(int arr[], int size) {
+    int i, j, temp;
+    
+    for (i = 0; i < size - 1; i++) {
+        for (j = 0; j < size - i - 1; j++) {
+            if (arr[j] > arr[j+1]) {
+                // Hoán đổi giá trị của hai phần tử
+                temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] = temp;
+            }
+        }
+    }
+}
+
+void xoaPhanTu(int arr[], int *size, int index) {
+    int i;
+    
+    if (index < 0 || index >= *size) {
+        printf("Khong the xoa phan tu\n");
+        return;
+    }
+    
+    for (i = index; i < *size - 1; i++) {
+        arr[i] = arr[i+1];
+    }
+    
+    (*size)--;
+}
+
+int main() {
+    int myArray[MAX_SIZE];
+    int n, i, key, found = 0;
+    
+    printf("Nhap so luong phan tu trong mang: ");
+    scanf("%d", &n);
+    
+    nhapMang(myArray, n);
+    
+    printf("Cac phan tu trong mang:\n");
+    xuatMang(myArray, n);
+    
+    printf("Nhap phan tu can tim kiem: ");
+    scanf("%d", &key);
+    
+    int index = timKiem(myArray, n, key);
+    if (index != -1) {
+        printf("Tim thay phan tu %d tai vi tri %d\n", key, index);
+    } else {
+        printf("Khong tim thay phan tu %d trong mang\n", key);
+    }
+    
+    sapXep(myArray, n);
+    
+    printf("Mang sau khi sap xep:\n");
+    xuatMang(myArray, n);
+    
+    printf("Nhap vi tri phan tu can xoa: ");
+    scanf("%d", &index);
+    
+    xoaPhanTu(myArray, &n, index);
+    
+    printf("Mang sau khi xoa phan tu:\n");
+    xuatMang(myArray, n);
+    
+    return 0;
+}
+```
+### Mảng nhiều chiều 
+Mảng nhiều chiều là một cấu trúc dữ liệu trong lập trình được sử dụng để lưu trữ và quản lý các phần tử có cùng kiểu dữ liệu trong một hệ thống nhiều chiều.
+Ví dụ khai báo mảng 2 chiều, gán giá trị và  truy xuất giá trị của các phần tử trong mảng
+```c
+
+int myArray[3][4]; // Khai báo mảng hai chiều gồm 3 hàng và 4 cột
+
+myArray[0][0] = 10; // Gán giá trị 10 cho phần tử ở hàng 0, cột 0
+myArray[1][2] = 20; // Gán giá trị 20 cho phần tử ở hàng 1, cột 2
+
+int value = myArray[2][3]; // Lấy giá trị của phần tử ở hàng 2, cột 3
+```
+
+Mảng nhiều chiều được tổ chức dưới dạng các mảng một chiều lồng nhau. Mỗi chiều trong mảng nhiều chiều tương ứng với một mảng một chiều. Chúng ta có thể truy cập các phần tử trong mảng nhiều chiều bằng cách sử dụng các chỉ số tương ứng với từng chiều.
+
+Mảng nhiều chiều được lưu trữ trong bộ nhớ máy tính theo cách tương tự như mảng một chiều, tuy nhiên có một số điểm khác biệt trong việc tính toán địa chỉ ô nhớ của các phần tử.
+
+Khi một mảng nhiều chiều được khai báo, hệ điều hành (hoặc trình biên dịch) sẽ cấp phát một vùng nhớ liên tiếp để lưu trữ các phần tử của mảng. Mảng nhiều chiều được tổ chức dưới dạng các mảng một chiều lồng nhau, với các phần tử cấp cao được lưu trữ gần với địa chỉ bộ nhớ bắt đầu của mảng.
+
+Ví dụ, giả sử chúng ta có một mảng hai chiều kiểu số nguyên 4-byte (int) gồm 3 hàng và 4 cột. Khi mảng này được khai báo, hệ điều hành sẽ cấp phát một vùng nhớ 48 byte (4 byte * 3 hàng * 4 cột) liên tiếp cho mảng. Các phần tử sẽ được lưu trữ theo thứ tự từ địa chỉ đầu mảng.
+
+```c
+int myArray[3][4]; // Mảng hai chiều gồm 3 hàng và 4 cột
+
+
+&myArray[0][0] // địa chỉ đầu mảng
+&myArray[0][1] // địa chỉ đầu mảng + 4 byte (kích thước của kiểu int)
+&myArray[0][2] // địa chỉ đầu mảng + 8 byte (kích thước của kiểu int * 2)
+
+&myArray[1][0] // địa chỉ đầu mảng + 16 byte (kích thước của kiểu int * 4)
+&myArray[1][1] // địa chỉ đầu mảng + 20 byte (kích thước của kiểu int * 4 + 4 byte)
+
+&myArray[2][3] // địa chỉ đầu mảng + 44 byte (kích thước của kiểu int * 8 + 12 byte)
+```
+Các thao tác với mảng 2 chiều
+- Nhập xuất phần tử trong mảng
+- Tìm kiếm phần tử trong mảng
+- Sắp xếp phần tử trong mảng
+- Xóa phần tử trong mảng
+```c
+#include <stdio.h>
+
+// Hằng số định nghĩa kích thước mảng
+#define ROWS 3
+#define COLS 4
+
+// Hàm nhập mảng
+void inputArray(int arr[ROWS][COLS]) {
+    printf("Nhập các phần tử của mảng:\n");
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            printf("arr[%d][%d] = ", i, j);
+            scanf("%d", &arr[i][j]);
+        }
+    }
+}
+
+// Hàm xuất mảng
+void outputArray(int arr[ROWS][COLS]) {
+    printf("Các phần tử của mảng:\n");
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            printf("%d ", arr[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+// Hàm tìm kiếm phần tử trong mảng
+void searchElement(int arr[ROWS][COLS], int target) {
+    int found = 0; // Biến kiểm tra phần tử có tồn tại trong mảng hay không
+
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            if (arr[i][j] == target) {
+                printf("Phần tử %d được tìm thấy tại vị trí arr[%d][%d]\n", target, i, j);
+                found = 1;
+            }
+        }
+    }
+    if (!found) {
+        printf("Không tìm thấy phần tử %d trong mảng\n", target);
+    }
+}
+
+// Hàm sắp xếp mảng theo thứ tự tăng dần
+void sortArray(int arr[ROWS][COLS]) {
+    for (int k = 0; k < ROWS * COLS - 1; k++) {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS - 1; j++) {
+                if (arr[i][j] > arr[i][j + 1]) {
+                    // Hoán đổi giá trị của hai phần tử
+                    int temp = arr[i][j];
+                    arr[i][j] = arr[i][j + 1];
+                    arr[i][j + 1] = temp;
+                }
+            }
+        }
+    }
+}
+
+// Hàm xóa phần tử khỏi mảng
+void deleteElement(int arr[ROWS][COLS], int target) {
+    int found = 0; // Biến kiểm tra phần tử có tồn tại trong mảng hay không
+
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            if (arr[i][j] == target) {
+                arr[i][j] = 0; // Gán giá trị 0 cho phần tử cần xóa
+                found = 1;
+            }
+        }
+    }
+
+    if (found) {
+        printf("Đã xóa phần tử %d khỏi mảng\n", target);
+    } else {
+        printf("Không tìm thấy phần tử %dtrong mảng\n", target);
+    }
+}
+
+int main() {
+    int myArray[ROWS][COLS];
+
+    inputArray(myArray);
+    outputArray(myArray);
+
+    int target;
+    printf("Nhập phần tử cần tìm kiếm: ");
+    scanf("%d", &target);
+    searchElement(myArray, target);
+
+    sortArray(myArray);
+    printf("Mảng sau khi được sắp xếp:\n");
+    outputArray(myArray);
+
+    printf("Nhập phần tử cần xóa: ");
+    scanf("%d", &target);
+    deleteElement(myArray, target);
+    printf("Mảng sau khi xóa phần tử:\n");
+    outputArray(myArray);
+
+    return 0;
+}
+```
+### Khi nào nên sử dụng mảng
+1. Lưu trữ tập hợp các phần tử có cùng kiểu dữ liệu
+2. Xử lý dữ liệu đơn giản
+
 ## Decision
 
 ## Looping
