@@ -229,6 +229,78 @@ Trong ngôn ngữ C, có 6 toán tử được gọi là toán tử bitwise (hay
   - Vậy giá trị `t.x`, `t.y` và `t.z` in ra sẽ là giá trị của vùng nhớ union t => Kết quả
 
 ## Memory Management
+###  Memory in c
+![Alt text](image.png)
+
+#### 1. Chức năng của các vùng nhớ
+- Text/Code segment: 
+    + Lưu code đã được biên dịch và core sẽ lấy lệnh ở đây để sử dụng. 
+    + Lưu các constant: vì nó là hằng, chỉ có thể đọc
+- Initialized data segment(DS - Data Segment):
+    +  Lưu các biến global variable, static variable đã được khởi tạo,       
+    + Ví dụ: static int i = 10 will be stored in the data segment and global int i = 10 will also be stored in data segment  
+- Uninitialized data segment(BSS): 
+    + Lưu các global variable, static variable chưa được khởi tạo, hoặc khởi tạo chưa rõ ràng (tức = 0).
+    Tuy nhiên, tùy vào môi trường làm việc mà môi trường đó quy định 0x00 hay 0xFF mới bằng 0. Nên khi làm việc ở môi trường nào chúng ta cần kiểm tra.
+    + Ví dụ: biến global: int a; 
+    hay biến local/global: static int b=0; sẽ được lưu ở vùng nhớ này.
+- Heap:  
+    + Là vùng nhớ cấp phát hoặc giải phóng bộ nhớ động(malloc, callloc, realloc, free).  
+    + Nếu cấp phát mà không giải phóng gây ra memory leak. 
+    + Heap có thể đầy nhưng không thể tràn  
+- Stack:  
+    + Stack là một vùng nhớ được cấp phát tự động và có cấu trúc LIFO (Last In First Out). Mỗi khi chương trình được gọi, thì các function frame sẽ được gọi và push vào trong stack. 
+    + Một số nguyên nhân gây tràn stack: đệ quy, cấp phát bộ nhớ cục bộ quá lớn,.. 
+#### 2. Một số câu hỏi liên quan
+- So sánh vùng nhớ Stack và Heap
+ | Stack | Heap|  
+  |:-----------:|:-----------:|
+  | cấp phát khi chương trình được biên dịch.    | cấp phát khi chạy chương trình (run-time)     | 
+  |  sử dụng cho việc thực thi thread, các biến cục bộ được lưu trữ ở vùng nhớ stack và tự động được giải phóng khi kết thúc hàm.   |  dùng cho cấp phát bộ nhớ động (malloc( ), new( )). Vùng nhớ được cấp phát tồn tại đến khi lập trình viên giải phóng vùng nhớ bằng lệnh free( ) hoặc delete.    | 
+  | Kích thước vùng nhớ stack được fix cố định, không thể tăng hoặc giảm kích thước vùng nhớ stack    | Hệ điều hành sẽ có cơ chế tăng kích thước vùng nhớ heap khi k đủ để cấp phát    | 
+  
+- Tại sao phải phân vùng Data segment thành 2 vùng DS và BSS?
+    + Tối ưu không gian bộ nhớ và chạy code nhanh hơn. 
+    + Những biến chưa được khởi tạo (có giá trị mặc định) chỉ chiếm không gian bộ nhớ khi thực sự cần sử dụng, giúp tiết kiệm bộ nhớ trong quá trình chạy chương trình.
+ 
+- Sự khác nhau giữa malloc và calloc?
+
+| Malloc (memory allocation) | Calloc(memory allocation)|  
+  |:-----------:|:-----------:|
+  | malloc nhận 1 tham số truyền vào là số byte của vùng nhớ cần cấp phát    | calloc nhận 2 tham số truyền vào là số block và kích thước mỗi block (byte)     | 
+  |  void *malloc(size_t n);   |  void *calloc(size_t n, size_t size);    | 
+  | Hàm trả về con trỏ trỏ tới vùng nhớ nếu cấp phát thành công, trả về NULL nếu cấp phát fail    | Hàm trả về con trỏ trỏ tới vùng nhớ được cấp phát và vùng nhớ được khởi tạo bằng giá trị 0. Trả về NULL nếu cấp phát fail    |
+
+
+### II.  Memory layout of Embedded C Program
+
+![Alt text](image-1.png)
+
+#### 1. Tổng quan
+Memory layout of Embedded C Program gần như giống với Memory in C nhưng có thêm vùng nhớ Reverse(dự trữ) và Vector Table(lưu địa chỉ)
+Và các vùng nhớ này được quản lý bởi Linker File.
++ khi viết chương trình C trên window thì mình đang là User sử dụng hệ điều hành. Nên k cần quan tâm cái tầng phía dưới như trong việc quản lý vùng nhớ (người tạo ra hệ điều hành ngầm cung cấp cho mình dùng), các thanh ghi nên k có các vùng này
++ nhưng khi viết trên thiết bị nhúng, bản thân minh cần quản lý các thành phần này nên cần LinkerFile.
+#### Linker File
++ Một Linker Script File (.ld) là một file text trong quá trình locator nhằm phân vùng địa chỉ trên vi điều khiển, do các vi điều khiển có vùng địa chỉ tuyệt đối trên flash, ram (không giống như máy tính). 
+![Alt text](image-2.png)
++ Ví dụ: Vùng flash bắt đầu từ đâu, độ dài bao nhiêu, vùng text, data trên đó chiếm bao nhiêu dung lượng, ... tất cả được quy định trên linker script file.
+
++	Tại sao cần có Linker Script File?
+    + Sau quá trình complie (đúng hơn là Cross Compile, do mình viết code trên môi trường này [window] nhưng chạy trên môi trường khác[vi xử lý/vi điều khiển] để chạy) và quá trình Assembler khi build -> tạo ra địa chỉ tương đối cho mỗi file .o (gồm text, data, bss, rodata)
+		![Alt text](image-3.png)
+ 
+    + Các file .o có thể bị xung đột lẫn nhau và địa chỉ này sẽ không phù hợp với địa chỉ mong muốn mà ta muốn nạp xuống vi điều khiển.
+
+    -> Cần Merge(mapping) các file .o với nhau, phân bổ vào memory  của VĐK như mong muốn
+
+    -> Linker Script File (.ld) giúp làm điều này
+
+
++ Linker File trong C và trong C/embedded.
+    + Khi sử dụng môi trường window để viết chương trình C, quá trình linker tạo ra file .exe thì chạy trên window luôn, ta không cần mapping các địa chỉ của các file lại do người tạo ra hệ điều hành đã ngầm cung cấp cho chúng ta (người dùng) rồi
+    + Trong Embedded có thêm Linker file vì đầu ra có thể là các  file .hex, elf,, và được chạy trên chính con chip luôn, nên cần Linker file để mapping các file lại với nhau. Ở đây bản thân mình là người tạo ra, cung cấp cho user dùng. 
+
 
 ## Pointer Basic 
 
