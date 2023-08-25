@@ -9,11 +9,126 @@
 ## Looping
 
 ## Function
-SS1:
-SS2:
-¬¬¬ c
-doi tien mien : thanh dev => tu chuyen sang dang visual studio
-¬¬¬
+
+### What is funcion ?
+-  Hàm trong C là một tập hợp các câu lệnh mà khi được gọi sẽ thực hiện một số tác vụ cụ thể. Nó là khối xây dựng cơ bản của một chương trình C cung cấp tính mô đun và khả năng sử dụng lại mã.
+- Syntax:
+```c
+type_specifier function_name(arguments)
+{
+    body of the function
+}
+```
+
+### Function parameter 
+
+#### Function Declarations
+- Trong một khai báo hàm, chúng ta phải cung cấp tên hàm, kiểu trả về của nó, số lượng và kiểu tham số của nó. 
+-  Một khai báo hàm cho trình biên dịch biết rằng có một hàm với tên đã cho được xác định ở một nơi khác trong chương trình.
+- Syntax : 
+```c
+return_type name_of_the_function (parameter_1,parameter_2)
+```
+Example : 
+```c
+int sum( int a, int b);
+```
+
+#### Function Definition
+- Định nghĩa hàm bao gồm các câu lệnh thực tế được thực thi khi hàm được gọi (tức là khi điều khiển chương trình đến hàm).
+- Syntax : 
+```c
+return_type function_name (para1_type para1_name, para2_type para2_name)
+{
+    // body of the function
+}
+```
+-Example : 
+```c
+int sum(int a, int b)
+{
+    return a + b;
+}
+```
+#### Function Call
+- Lời gọi hàm là một câu lệnh hướng dẫn trình biên dịch thực thi hàm. Chúng ta sử dụng tên hàm và các tham số trong lệnh gọi hàm.
+![Alt text](image-6.png)
+#### Function Arguments & Function Return Type
+- Đối số hàm (còn được gọi là Tham số hàm) là dữ liệu được truyền cho hàm.
+- Example:
+```c
+int function_name(int var1, int var2)
+```
+-Kiểu trả về của hàm cho biết loại giá trị nào được trả về sau khi tất cả hàm được thực thi. Khi không muốn trả về một giá trị, chúng ta có thể sử dụng kiểu dữ liệu void.
+```c
+void function_name(int var1, int var2)
+```
+#### Types of Functions
+![Alt text](image-9.png)
+- Library Function
+```c
+pow(), sqrt(), strcmp(), strcpy() etc
+```
+- User Defined Function
+```c
+int sum(int a, int b)
+{
+    return a + b;
+}
+```
+#### Passing Parameters to Functions
+- Truyền bằng tham chiếu
+- Truyền bằng tham trị
+
+### Function keyword 
+
+#### Static function
+- Hàm tĩnh trong C là hàm có phạm vi được giới hạn trong tệp chứa nó .
+- Example:
+```c
+static void staticFunc(void)
+{
+      static int a = 0;
+      a++;
+  printf("Inside the static function staticFunc() ");
+}
+```
+#### Inline function
+- Inline function được khai báo với từ khóa inline và được xử lý bởi compliler.
+- Khi compiler thấy bất kỳ chỗ nào xuất hiện inline function, nó sẽ thay thế chỗ đó bởi định nghĩa của hàm đã được compile tương ứng. –> Phần được thay thế không phải code mà là đoạn code đã được compile
+- Example:
+```c
+static inline void inlineFunc(void)
+{
+	printf("Inside the inline function inlineFunc() ");
+}
+```
+#### Function-like macro
+- Function-like macro được viết giống như macro bình thường
+- Function-like macro có thể nhận các đối số, giống như các hàm thực sự
+- Trong quá trình tiền xử lý : thay thế đoạn code được khai báo macro vào bất cứ chỗ nào xuất hiện macro đó
+Syntax :
+```c
+#define Macro_Function_name(param0, param1,   (expression)
+```
+-  Example :
+```c
+#define min(X, Y)  ((X) < (Y)  ?  (X) : (Y))
+```
+
+### Variable argument list
+Đôi khi, ta có thể gặp một tình huống khi ta muốn có một hàm có thể nhận số lượng đối số thay đổi, tức là các tham số, thay vì số lượng tham số được xác định trước. Ngôn ngữ lập trình C cung cấp giải pháp cho tình huống này và ta được phép xác định một hàm có thể chấp nhận số lượng tham số thay đổi dựa trên yêu cầu của ta. Ví dụ sau đây cho thấy định nghĩa của một hàm như vậy
+```c
+int func(int, ... ) {
+   .
+   .
+   .
+}
+
+int main() {
+   func(1, 2, 3);
+   func(1, 2, 3, 4);
+}```
 
 ## Macro
 
@@ -180,7 +295,7 @@ Trong ngôn ngữ C, có 6 toán tử được gọi là toán tử bitwise (hay
 - Ý tưởng của bit field là sử dụng bộ nhớ một cách hiệu quả khi chúng ta biết rằng giá trị của một trường hoặc nhóm trường sẽ không vượt quá giới hạn hoặc nằm trong một khoảng nhỏ. 
 - Bit field trong C được sử dụng khi không gian lưu trữ trong chương trình của chúng ta bị hạn chế.
 - Lợi ích của Bit field trong C
-  - Giảm tiêu thụ bộ nhớ.
+- Giảm tiêu thụ bộ nhớ.
   - Làm cho chương trình của chúng ta hiệu quả và linh hoạt hơn.
   - Dễ triển khai.
 
